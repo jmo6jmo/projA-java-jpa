@@ -1,0 +1,61 @@
+# Eclipse.gitignore
+
+*.pydevproject
+.metadata
+.gradle
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.springBeans
+
+# External tool builders
+.externalToolBuilders/
+
+# Locally stored "Eclipse launch configurations"
+*.launch
+
+# CDT-specific
+.cproject
+
+# PDT-specific
+.buildpath
+
+# sbteclipse plugin 
+.target
+
+# TeXlipse plugin
+.texlipse
+
+
+# Jave.gitignore
+*.class
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+# Except gradle-wrapper.jar, which is recommended by Gradle to be included
+!gradle/wrapper/gradle-wrapper.jar
+*.war
+*.ear
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+
+#Gradle.gitignore
+.gradle
+build/
+.classpath
+.project
+
+
+# Ignore Gradle GUI config
+gradle-app.setting
