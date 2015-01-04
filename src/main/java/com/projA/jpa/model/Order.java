@@ -10,7 +10,7 @@
  * Contributors:
  *      Oracle - initial impl
  ******************************************************************************/
-package com.projA.model;
+package com.projA.jpa.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;

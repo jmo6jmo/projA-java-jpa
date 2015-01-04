@@ -10,7 +10,7 @@
  * Contributors:
  *      Oracle - initial impl
  ******************************************************************************/
-package com.projA.model;
+package com.projA.jpa.model;
 
 import java.io.Serializable;
 
@@ -54,5 +54,9 @@ public class Customer implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+    
+    public String toString() {
+        return "Customer(" + this.name + ")";
     }
 }

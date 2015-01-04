@@ -12,6 +12,22 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'spring-boot'
+apply plugin: 'maven'
+
+version = '0.1.0'
+group = 'com.jmo.projA'
+
+install {
+    repositories.mavenInstaller {
+        pom.project {
+          parent { 
+            groupId 'org.springframework.boot'
+            artifactId 'spring-boot-starter-parent'
+            version '1.1.7.RELEASE'
+          }
+        }
+    }
+}
 
 jar {
     baseName = 'projA-jpa'
@@ -31,17 +47,21 @@ repositories {
     maven { url "http://repo.spring.io/libs-release" }
 }
 
-configurations {
-    providedRuntime
-}
-
 dependencies {
 	compile("org.eclipse.persistence:org.eclipse.persistence.jpa:2.5.2")
 	compile("org.eclipse.persistence:org.eclipse.persistence.nosql:2.5.2")
 	compile("org.mongodb:mongo-java-driver:2.12.3")
 	compile("org.springframework.boot:spring-boot-starter")
 	compile("org.springframework:spring-orm")
+	runtime("org.springframework:spring-instrument:4.0.7.RELEASE")
     testCompile("junit:junit")
+}
+
+task copyLibs(type: Copy) {
+	from configurations.runtime {
+		include 'spring-instrument-4.0.7.RELEASE.jar'
+	}
+	into 'lib'
 }
 
 task wrapper(type: Wrapper) {

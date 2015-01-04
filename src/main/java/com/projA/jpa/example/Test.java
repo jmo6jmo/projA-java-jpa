@@ -10,13 +10,11 @@
  * Contributors:
  *      Oracle - initial impl
  ******************************************************************************/
-package com.projA.example;
+package com.projA.jpa.example;
 
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
@@ -25,7 +23,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mongodb.DB;
-import com.projA.model.*;
+import com.projA.jpa.model.*;
 
 /**
  * Test performs CRUD operations on Orders persisting to a Mongo database.
@@ -33,7 +31,6 @@ import com.projA.model.*;
  */
 @Component
 public class Test {
-//    EntityManagerFactory factory;
     String oid;
     
     @PersistenceContext
@@ -50,8 +47,6 @@ public class Test {
     @Transactional
     public void testPersist() {
         System.out.println("\nTesting persist() of orders and customers.\n"); 
-        //EntityManager em = factory.createEntityManager();
-//        em.getTransaction().begin();
         Customer customer = new Customer();
         customer.setName("AMCE");
         em.persist(customer);        
@@ -126,58 +121,59 @@ public class Test {
         order.addOrderLine(new OrderLine("shipping", 80));
         em.persist(order);
         
-//        em.getTransaction().commit();
         oid = order.getId();
         em.close();
     }
 
-//    public void testFind() {
-//        System.out.println("\nTesting find() by Id.\n");
-//        EntityManager em = factory.createEntityManager();
-//        Order order = em.find(Order.class, oid);
-//        System.out.println("Found order:" + order + " by its oid: " + oid);
-//        em.close();
-//    }
-//
-//    public void testQuery() {
-//        System.out.println("\nTesting querying.\n");
-//        EntityManager em = factory.createEntityManager();
-//        Query query = em.createQuery("Select o from Order o where o.totalCost > 1000");
-//        List<Order> orders = query.getResultList();
-//        System.out.println("\nFound orders with cost > 1,000: " + orders + "\n");
-//        query = em.createQuery("Select o from Order o where o.description like 'Pinball%'");
-//        orders = query.getResultList();
-//        System.out.println("\nFound orders for pinball: " + orders + "\n");
-//        query = em.createQuery("Select o from Order o join o.orderLines l where l.description = :desc");
-//        query.setParameter("desc", "shipping");
-//        orders = query.getResultList();
-//        System.out.println("\nFound orders with shipping charges: " + orders + "\n");
-//
-//        query = em.createNativeQuery("db.ORDER.findOne({\"_id\":\"" + oid + "\"})", Order.class);
-//        Order order = (Order)query.getSingleResult();
-//        System.out.println("\nFound order using a native query: " + order + "\n");
-//        
-//        em.close();
-//    }
-//
-//    public void testUpdate() {
-//        System.out.println("\nTesting update of order.\n");
-//        EntityManager em = factory.createEntityManager();
-//        em.getTransaction().begin();
-//        Order order = em.find(Order.class, oid);
-//        order.addOrderLine(new OrderLine("handling", 55));
-//        order.addOrderLine(new OrderLine("tax", 300));
-//        em.getTransaction().commit();
-//        em.close();
-//    }
-//
-//    public void testRemove() {
-//        System.out.println("\nTesting remove of order.\n");
-//        EntityManager em = factory.createEntityManager();
-//        em.getTransaction().begin();
-//        Order order = em.find(Order.class, oid);
-//        em.remove(order);
-//        em.getTransaction().commit();
-//        em.close();
-//    }
+    public void testFind() {
+        System.out.println("\nTesting find() by Id.\n");
+        Order order = em.find(Order.class, oid);
+        System.out.println("Found order:" + order + " by its oid: " + oid);
+        em.close();
+    }
+
+    public void testQuery() {
+        System.out.println("\nTesting querying.\n");
+        Query query = em.createQuery("Select o from Order o where o.totalCost > 1000");
+        List<Order> orders = query.getResultList();
+        System.out.println("\nFound orders with cost > 1,000: " + orders + "\n");
+        query = em.createQuery("Select o from Order o where o.description like 'Pinball%'");
+        orders = query.getResultList();
+        System.out.println("\nFound orders for pinball: " + orders + "\n");
+        query = em.createQuery("Select o from Order o join o.orderLines l where l.description = :desc");
+        query.setParameter("desc", "shipping");
+        orders = query.getResultList();
+        System.out.println("\nFound orders with shipping charges: " + orders + "\n");
+
+        query = em.createNativeQuery("db.ORDER.findOne({\"_id\":\"" + oid + "\"})", Order.class);
+        Order order = (Order)query.getSingleResult();
+        System.out.println("\nFound order using a native query: " + order + "\n");
+        
+        em.close();
+    }
+    
+    public Customer testFindCustomer(String customerName) {
+    	Query query = em.createQuery("Select c from Customer c where c.name = :name");
+    	query.setParameter("name", customerName);
+    	Customer customer = (Customer)query.getSingleResult();
+    	em.close();
+    	return customer;
+    }
+
+    @Transactional
+    public void testUpdate() {
+        System.out.println("\nTesting update of order.\n");
+        Order order = em.find(Order.class, oid);
+        order.addOrderLine(new OrderLine("handling", 55));
+        order.addOrderLine(new OrderLine("tax", 300));
+        em.close();
+    }
+
+    @Transactional
+    public void testRemove() {
+        System.out.println("\nTesting remove of order.\n");
+        Order order = em.find(Order.class, oid);
+        em.remove(order);
+        em.close();
+    }
 }
