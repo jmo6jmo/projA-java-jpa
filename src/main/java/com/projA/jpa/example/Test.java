@@ -19,11 +19,12 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.eclipse.persistence.internal.nosql.adapters.mongo.MongoConnection;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mongodb.DB;
-import com.projA.jpa.model.*;
+import com.projA.jpa.testmodel.*;
 
 /**
  * Test performs CRUD operations on Orders persisting to a Mongo database.
@@ -33,10 +34,10 @@ import com.projA.jpa.model.*;
 public class Test {
     String oid;
     
-    @PersistenceContext
+    @PersistenceContext(unitName="projA-java-jpa-test")
     public EntityManager em;
     
-    @Transactional
+    @Transactional("testTransactionManager")
     public void cleanDB() {
         // First clear old database.
         DB db = ((MongoConnection)this.em.unwrap(javax.resource.cci.Connection.class)).getDB();
@@ -44,7 +45,7 @@ public class Test {
         this.em.close();
     }
 
-    @Transactional
+    @Transactional("testTransactionManager")
     public void testPersist() {
         System.out.println("\nTesting persist() of orders and customers.\n"); 
         Customer customer = new Customer();
@@ -160,7 +161,7 @@ public class Test {
     	return customer;
     }
 
-    @Transactional
+    @Transactional("testTransactionManager")
     public void testUpdate() {
         System.out.println("\nTesting update of order.\n");
         Order order = em.find(Order.class, oid);
@@ -169,7 +170,7 @@ public class Test {
         em.close();
     }
 
-    @Transactional
+    @Transactional("testTransactionManager")
     public void testRemove() {
         System.out.println("\nTesting remove of order.\n");
         Order order = em.find(Order.class, oid);

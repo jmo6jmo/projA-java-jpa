@@ -7,12 +7,13 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.util.ClassUtils;
 
 import com.projA.jpa.example.Test;
-import com.projA.jpa.model.Customer;
+import com.projA.jpa.testmodel.Customer;
 
 @Configuration
 @ComponentScan
@@ -32,20 +33,43 @@ public class Application {
         Customer customer = test.testFindCustomer("Smith");
         System.out.println("\nFound customer using a query: " + customer + "\n");
     }
-	
+	 
 	@Bean
-	public LocalContainerEntityManagerFactoryBean cemf() {
+	public LocalContainerEntityManagerFactoryBean testEmf() {
 		LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-		em.setPersistenceUnitName("projA-java-jpa");
+		em.setPersistenceUnitName("projA-java-jpa-test");
 		// Not needed but to be specific which LoadTimeWeaver is used
+		// Depending on the container either TomcatLoadTimeWeaver or InstrumentationLoadTimeWeaver (VM -javaagent argument) will be used
+		// Set TomcatInstrumentableClassLoader in <Context><Loader> config in server.xml in tc Server in order to use TomcatLoadTimeWeaver
 		em.setLoadTimeWeaver(new org.springframework.context.weaving.DefaultContextLoadTimeWeaver(ClassUtils.getDefaultClassLoader()));
-		em.setPackagesToScan(new String[] { "com.projA.jpa.model" });
+		// Not used for now since persistence.xml is used and it overrides but specify anyway for reference and possible future usage
+		em.setPackagesToScan(new String[] { "com.projA.jpa.testmodel" });
   		return em;
   	}
 	
 	@Bean
+	public LocalContainerEntityManagerFactoryBean emf() {
+		LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
+		em.setPersistenceUnitName("projA-java-jpa");
+		// Not needed but to be specific which LoadTimeWeaver is used
+		// Depending on the container either TomcatLoadTimeWeaver or InstrumentationLoadTimeWeaver (VM -javaagent argument) will be used
+		// Set TomcatInstrumentableClassLoader in <Context><Loader> config in server.xml in tc Server in order to use TomcatLoadTimeWeaver
+		em.setLoadTimeWeaver(new org.springframework.context.weaving.DefaultContextLoadTimeWeaver(ClassUtils.getDefaultClassLoader()));
+		// Not used for now since persistence.xml is used and it overrides but specify anyway for reference and possible future usage
+		em.setPackagesToScan(new String[] { "com.projA.jpa.testmodel" });
+  		return em;
+  	}
+	
+	@Bean
+	public JpaTransactionManager testTransactionManager() {
+		JpaTransactionManager tm = new JpaTransactionManager(testEmf().getObject());
+		return tm;
+	}
+	
+	@Bean
+	@Primary
 	public JpaTransactionManager transactionManager() {
-		JpaTransactionManager tm = new JpaTransactionManager();
+		JpaTransactionManager tm = new JpaTransactionManager(emf().getObject());
 		return tm;
 	}
 }

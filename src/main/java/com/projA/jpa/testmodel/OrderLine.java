@@ -10,68 +10,59 @@
  * Contributors:
  *      Oracle - initial impl
  ******************************************************************************/
-package com.projA.jpa.model;
+package com.projA.jpa.testmodel;
 
 import java.io.Serializable;
 
 import javax.persistence.*;
+
 import org.eclipse.persistence.nosql.annotations.DataFormatType;
 import org.eclipse.persistence.nosql.annotations.NoSql;
 
 /**
- * Address, stored as part of the Order document.
+ * OrderLine, stored as part of the Order document.
  * @author James Sutherland
  */
 @Embeddable
 @NoSql(dataFormat=DataFormatType.MAPPED)
-public class Address implements Serializable {
-    private String street;
-    private String city;
-    private String province;
-    private String country;
-    private String postalCode;    
+public class OrderLine implements Serializable {
+    @Basic
+    private int lineNumber;
+    @Basic
+    private String description;
+    @Basic
+    private double cost = 0;
 
-    public Address() {
+    public OrderLine() {
+    }
+    
+    public OrderLine(String description, double cost) {
+        this.description = description;
+        this.cost = cost;
     }
 
-    public String getStreet() {
-        return street;
+    public int getLineNumber() {
+        return lineNumber;
     }
 
-    public void setStreet(String street) {
-        this.street = street;
+    public void setLineNumber(int lineNumber) {
+        this.lineNumber = lineNumber;
     }
 
-    public String getCity() {
-        return city;
+    public String getDescription() {
+        return description;
     }
 
-    public void setCity(String city) {
-        this.city = city;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public String getProvince() {
-        return province;
+    public double getCost() {
+        return cost;
     }
 
-    public void setProvince(String province) {
-        this.province = province;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getPostalCode() {
-        return postalCode;
-    }
-
-    public void setPostalCode(String postalCode) {
-        this.postalCode = postalCode;
+    public void setCost(double cost) {
+        this.cost = cost;
     }
     
 }
